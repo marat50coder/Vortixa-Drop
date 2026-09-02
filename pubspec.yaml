@@ -1,0 +1,44 @@
+name: vortixadropgame
+description: Vortixa Drop — offline neon decision tool.
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  shared_preferences: ^2.5.5
+  audioplayers: ^6.5.1
+  webview_flutter: ^4.13.0
+  webview_flutter_wkwebview: ^3.26.0
+  provider: ^6.1.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/branding/icon.png"
+  adaptive_icon_background: "assets/branding/icon.png"
+  adaptive_icon_foreground: "assets/branding/icon.png"
+  adaptive_icon_foreground_inset: 0
+  remove_alpha_ios: true
+  background_color_ios: "#050510"
+  min_sdk_android: 21
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/branding/
+    - assets/loading/
+    - assets/gameplay/
+    - assets/sounds/
+    - assets/balls/
+    - assets/onboarding/
