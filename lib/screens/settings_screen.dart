@@ -5,8 +5,11 @@ import '../core/app_assets.dart';
 import '../core/app_colors.dart';
 import '../core/app_urls.dart';
 import '../data/app_store.dart';
+import '../data/shot_keep.dart';
 import '../services/audio_service.dart';
+import '../widgets/face_chip.dart';
 import '../widgets/glass_panel.dart';
+import '../widgets/neon_button.dart';
 import '../widgets/scene_background.dart';
 import 'webview_screen.dart';
 
@@ -35,6 +38,58 @@ class SettingsScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Image.asset(AppAssets.gameName, height: 110, fit: BoxFit.contain),
             const SizedBox(height: 16),
+            GlassPanel(
+              child: Row(
+                children: [
+                  FaceChip(
+                    path: store.facePath,
+                    stamp: store.faceStamp,
+                    size: 76,
+                    showCamMark: true,
+                    onTap: () => _editFace(context, store),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Profile photo',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          store.facePath == null
+                              ? 'Take a photo or choose one from your library.'
+                              : 'Tap to replace or remove this photo.',
+                          style: const TextStyle(
+                            color: VxColors.textMuted,
+                            fontSize: 13,
+                            height: 1.35,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        NeonButton(
+                          label: store.facePath == null
+                              ? 'Add photo'
+                              : 'Change',
+                          icon: Icons.camera_alt_rounded,
+                          expanded: true,
+                          secondary: true,
+                          onPressed: () => _editFace(context, store),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
             GlassPanel(
               child: Column(
                 children: [
@@ -168,6 +223,69 @@ class SettingsScreen extends StatelessWidget {
       ),
       trailing: const Icon(Icons.chevron_right_rounded, color: Colors.white38),
       onTap: onTap,
+    );
+  }
+
+  Future<void> _editFace(BuildContext context, AppStore store) async {
+    AudioService.instance.play(AppAssets.soundTap);
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext sheet) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 28),
+          child: GlassPanel(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Profile photo',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Kept only on this device.',
+                  style: TextStyle(
+                    color: VxColors.textMuted,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                _tile(
+                  icon: Icons.photo_camera_rounded,
+                  title: 'Take a photo',
+                  onTap: () async {
+                    Navigator.of(sheet).pop();
+                    await store.takeFace(FaceSource.camera);
+                  },
+                ),
+                _tile(
+                  icon: Icons.photo_library_rounded,
+                  title: 'Choose from library',
+                  onTap: () async {
+                    Navigator.of(sheet).pop();
+                    await store.takeFace(FaceSource.gallery);
+                  },
+                ),
+                if (store.facePath != null)
+                  _tile(
+                    icon: Icons.delete_outline_rounded,
+                    title: 'Remove photo',
+                    onTap: () async {
+                      Navigator.of(sheet).pop();
+                      await store.wipeFace();
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

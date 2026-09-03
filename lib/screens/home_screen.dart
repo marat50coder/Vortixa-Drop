@@ -6,6 +6,8 @@ import '../core/app_colors.dart';
 import '../data/app_store.dart';
 import '../data/models.dart';
 import '../services/audio_service.dart';
+import '../data/shot_keep.dart';
+import '../widgets/face_chip.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/neon_ball.dart';
 import '../widgets/neon_button.dart';
@@ -43,6 +45,14 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  FaceChip(
+                    path: store.facePath,
+                    stamp: store.faceStamp,
+                    size: 46,
+                    showCamMark: store.facePath == null,
+                    onTap: () => _openFaceSheet(context, store),
+                  ),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Image.asset(
                       AppAssets.gameName,
@@ -210,6 +220,90 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _openFaceSheet(BuildContext context, AppStore store) async {
+    AudioService.instance.play(AppAssets.soundTap);
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext sheet) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 28),
+          child: GlassPanel(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Profile photo',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(
+                    Icons.photo_camera_rounded,
+                    color: VxColors.cyan,
+                  ),
+                  title: const Text(
+                    'Take a photo',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  onTap: () async {
+                    Navigator.of(sheet).pop();
+                    await store.takeFace(FaceSource.camera);
+                  },
+                ),
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: const Icon(
+                    Icons.photo_library_rounded,
+                    color: VxColors.cyan,
+                  ),
+                  title: const Text(
+                    'Choose from library',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  onTap: () async {
+                    Navigator.of(sheet).pop();
+                    await store.takeFace(FaceSource.gallery);
+                  },
+                ),
+                if (store.facePath != null)
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: const Icon(
+                      Icons.delete_outline_rounded,
+                      color: VxColors.cyan,
+                    ),
+                    title: const Text(
+                      'Remove photo',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    onTap: () async {
+                      Navigator.of(sheet).pop();
+                      await store.wipeFace();
+                    },
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

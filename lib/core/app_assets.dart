@@ -4,8 +4,8 @@ class AppAssets {
   static const gameName = 'assets/branding/game_name.webp';
   static const icon = 'assets/branding/icon.png';
 
-  static const verticalLoading = 'assets/loading/Vertical_Loading_Screen.webp';
-  static const horizontalLoading = 'assets/loading/Horizontal_Loading_Screen.webp';
+  static const verticalLoading = 'assets/loading/vt_boot_port.webp';
+  static const horizontalLoading = 'assets/loading/vt_boot_land.webp';
 
   static const dropChamber = 'assets/gameplay/drop_chamber_background_asset.webp';
   static const vortexCore = 'assets/gameplay/vortex_core_background_asset.webp';
@@ -40,16 +40,16 @@ class AppAssets {
     ballTurquoise,
   ];
 
-  static const soundLaunch = 'sounds/app_launch_asset.mp3';
-  static const soundTap = 'sounds/button_tap_asset.mp3';
-  static const soundMenuOpen = 'sounds/menu_open_asset.mp3';
-  static const soundMenuClose = 'sounds/menu_close_asset.mp3';
-  static const soundSave = 'sounds/save_success_asset.mp3';
-  static const soundError = 'sounds/error_asset.mp3';
-  static const soundBallAdd = 'sounds/ball_add_asset.mp3';
-  static const soundBallRemove = 'sounds/ball_remove_asset.mp3';
-  static const soundDropStart = 'sounds/drop_start_asset.mp3';
-  static const soundCollision = 'sounds/ball_collision_asset.mp3';
-  static const soundVortex = 'sounds/vortex_movement_asset.mp3';
-  static const soundResult = 'sounds/result_reveal_asset.mp3';
+  static const soundLaunch = 'sounds/vt_boot_chime.mp3';
+  static const soundTap = 'sounds/vt_pad_click.mp3';
+  static const soundMenuOpen = 'sounds/vt_drawer_in.mp3';
+  static const soundMenuClose = 'sounds/vt_drawer_out.mp3';
+  static const soundSave = 'sounds/vt_keep_ok.mp3';
+  static const soundError = 'sounds/vt_warn_blip.mp3';
+  static const soundBallAdd = 'sounds/vt_orb_in.mp3';
+  static const soundBallRemove = 'sounds/vt_orb_out.mp3';
+  static const soundDropStart = 'sounds/vt_fall_go.mp3';
+  static const soundCollision = 'sounds/vt_orb_hit.mp3';
+  static const soundVortex = 'sounds/vt_gyre_loop.mp3';
+  static const soundResult = 'sounds/vt_pick_fanfare.mp3';
 }

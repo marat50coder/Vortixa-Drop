@@ -4,10 +4,13 @@ import 'package:provider/provider.dart';
 
 import 'core/app_colors.dart';
 import 'data/app_store.dart';
+import 'kine/kine_pilot.dart';
 import 'screens/loading_screen.dart';
 
 class VortixaApp extends StatelessWidget {
-  const VortixaApp({super.key});
+  const VortixaApp({super.key, this.helm});
+
+  final KinePilot? helm;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,7 @@ class VortixaApp extends StatelessWidget {
           ),
           useMaterial3: true,
         ),
-        home: const LoadingScreen(),
+        home: LoadingScreen(helm: helm),
       ),
     );
   }

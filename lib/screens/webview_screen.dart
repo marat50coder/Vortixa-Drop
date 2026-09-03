@@ -29,19 +29,20 @@ class _SimpleWebViewScreenState extends State<SimpleWebViewScreen> {
   bool _hasError = false;
 
   static const _readableCss = '''
-    (function() {
+    (() => {
+      const ink = document.createElement('style');
+      ink.setAttribute('data-vt-ink', 'readable');
       document.documentElement.style.background = '#ffffff';
       document.body.style.background = '#ffffff';
       document.body.style.color = '#111111';
-      var s = document.createElement('style');
-      s.textContent = [
+      ink.textContent = [
         'html,body,#app,#root,main,article,section{background:#ffffff!important;color:#111111!important;}',
         'body{padding:20px 16px 40px!important;box-sizing:border-box!important;}',
         'body,p,li,h1,h2,h3,h4,h5,h6,span,div,td,th,label,small,strong,em{color:#111111!important;}',
         'a,a *{color:#0b57d0!important;}',
         'input,textarea,select{color:#111!important;background:#fff!important;border-color:#ccc!important;}'
-      ].join(' ');
-      document.head.appendChild(s);
+      ].join('');
+      document.head.appendChild(ink);
     })();
   ''';
 

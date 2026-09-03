@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../core/app_colors.dart';
 import '../services/audio_service.dart';
 import '../services/haptics_service.dart';
+import 'shot_keep.dart';
 import 'models.dart';
 
 class AppStore extends ChangeNotifier {
@@ -30,9 +31,19 @@ class AppStore extends ChangeNotifier {
   String? lastWinnerId;
 
   SharedPreferences? _prefs;
+  ShotKeep? _face;
+  int _faceStamp = 0;
+
+  String? get facePath => _face?.path;
+  int get faceStamp => _faceStamp;
 
   Future<void> load() async {
     _prefs = await SharedPreferences.getInstance();
+    try {
+      _face = await ShotKeep.open();
+    } catch (_) {
+      _face = null;
+    }
     final settingsRaw = _prefs!.getString(_keySettings);
     if (settingsRaw != null) {
       settings = AppSettings.fromJson(
@@ -359,6 +370,21 @@ class AppStore extends ChangeNotifier {
     settings.skipRepeat = value;
     notifyListeners();
     await _persistSettings();
+  }
+
+  Future<bool> takeFace(FaceSource source) async {
+    final ShotKeep? locker = _face;
+    if (locker == null) return false;
+    await locker.take(source);
+    _faceStamp++;
+    notifyListeners();
+    return locker.hasShot;
+  }
+
+  Future<void> wipeFace() async {
+    await _face?.wipe();
+    _faceStamp++;
+    notifyListeners();
   }
 
   Future<void> completeOnboarding() async {

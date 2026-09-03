@@ -19,6 +19,7 @@ class AudioService {
 
   Future<void> play(String asset) async {
     if (!enabled) return;
+    await init();
     try {
       await _sfx.stop();
       await _sfx.play(AssetSource(asset));
