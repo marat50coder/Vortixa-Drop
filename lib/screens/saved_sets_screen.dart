@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../core/app_assets.dart';
 import '../core/app_colors.dart';
 import '../data/app_store.dart';
+import '../data/starter_packs.dart';
 import '../services/audio_service.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/neon_ball.dart';
@@ -71,9 +72,10 @@ class SavedSetsScreen extends StatelessWidget {
                             onTap: () {
                               AudioService.instance.play(AppAssets.soundMenuOpen);
                               store.loadSavedSet(set);
+                              store.openTab(HomeTabs.drop);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Loaded “${set.name}”'),
+                                  content: Text('Loaded “${set.name}” into Drop'),
                                 ),
                               );
                             },

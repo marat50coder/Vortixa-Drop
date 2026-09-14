@@ -5,9 +5,11 @@ import '../core/app_assets.dart';
 import '../core/app_colors.dart';
 import '../core/app_urls.dart';
 import '../data/app_store.dart';
+import '../data/starter_packs.dart';
 import '../services/audio_service.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/scene_background.dart';
+import 'support_screen.dart';
 import 'webview_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -69,6 +71,14 @@ class SettingsScreen extends StatelessWidget {
               child: Column(
                 children: [
                   _tile(
+                    icon: Icons.menu_book_rounded,
+                    title: 'How it works',
+                    onTap: () {
+                      AudioService.instance.play(AppAssets.soundMenuOpen);
+                      store.openTab(HomeTabs.guide);
+                    },
+                  ),
+                  _tile(
                     icon: Icons.delete_sweep_rounded,
                     title: 'Clear History',
                     onTap: () async {
@@ -93,13 +103,14 @@ class SettingsScreen extends StatelessWidget {
                   _tile(
                     icon: Icons.support_agent_rounded,
                     title: 'Support',
-                    onTap: () => _openWeb(
-                      context,
-                      title: 'Support',
-                      url: AppUrls.support,
-                      readable: true,
-                      fullscreen: true,
-                    ),
+                    onTap: () {
+                      AudioService.instance.play(AppAssets.soundMenuOpen);
+                      Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                          builder: (_) => const SupportScreen(),
+                        ),
+                      );
+                    },
                   ),
                   _tile(
                     icon: Icons.info_outline_rounded,

@@ -14,6 +14,8 @@ class GuideScreen extends StatelessWidget {
     ('Daily', 'A new question each day. Same local random — no account, no feed.'),
     ('Duel', 'Two names, one drop. Fast when you only have a pair.'),
     ('Offline', 'History, sets, and streaks stay on this device.'),
+    ('Presets & Lab', 'Presets load a pack into Drop. Lab runs Best of 3 or shuffles colors.'),
+    ('Settings', 'Sound, haptics, animations, Privacy Policy, and Support. No account.'),
   ];
 
   @override

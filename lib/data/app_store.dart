@@ -7,6 +7,7 @@ import '../core/app_colors.dart';
 import '../services/audio_service.dart';
 import '../services/haptics_service.dart';
 import 'models.dart';
+import 'starter_packs.dart';
 
 class AppStore extends ChangeNotifier {
   static const _keyWorking = 'vx_working';
@@ -28,6 +29,7 @@ class AppStore extends ChangeNotifier {
   int pickCount = 2;
   int groupCount = 2;
   String? lastWinnerId;
+  int shellTab = HomeTabs.drop;
 
   SharedPreferences? _prefs;
 
@@ -62,7 +64,63 @@ class AppStore extends ChangeNotifier {
     }
     AudioService.instance.enabled = settings.sound;
     HapticsService.instance.enabled = settings.haptics;
+    await _seedStarterIfNeeded();
     notifyListeners();
+  }
+
+  void openTab(int index) {
+    final next = index.clamp(0, HomeTabs.count - 1);
+    if (shellTab == next) return;
+    shellTab = next;
+    notifyListeners();
+  }
+
+  Future<void> _seedStarterIfNeeded() async {
+    if (settings.starterSeeded) return;
+    if (savedSets.isNotEmpty || workingOptions.isNotEmpty) {
+      settings.starterSeeded = true;
+      await _persistSettings();
+      return;
+    }
+    final now = DateTime.now();
+    ChoiceSet pack(String name, List<String> labels) {
+      return ChoiceSet(
+        id: DropSession.newId(),
+        name: name,
+        options: [
+          for (var i = 0; i < labels.length; i++)
+            ChoiceOption(
+              id: DropSession.newId(),
+              label: labels[i],
+              colorIndex: i % VxColors.ballTints.length,
+            ),
+        ],
+        updatedAt: now,
+      );
+    }
+
+    final eat = pack('Eat', StarterPacks.eat);
+    final watch = pack('Watch', StarterPacks.watch);
+    final team = pack('Team', StarterPacks.team);
+    savedSets = [eat, watch, team];
+    workingSetId = eat.id;
+    workingSetName = eat.name;
+    workingOptions = eat.options.map((o) => o.copy()).toList();
+    settings.favoriteSetIds = [eat.id];
+    settings.starterSeeded = true;
+    await _persistWorking();
+    await _persistSaved();
+    await _persistSettings();
+  }
+
+  void ensureReadyToDrop() {
+    if (workingOptions.length >= 2) return;
+    applyPreset('Eat', StarterPacks.eat);
+  }
+
+  void ensureDailyOptions(String prompt) {
+    if (workingOptions.length >= 2) return;
+    applyPreset('Daily', StarterPacks.forDailyPrompt(prompt));
   }
 
   Future<void> _persistWorking() async {

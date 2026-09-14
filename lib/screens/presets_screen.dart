@@ -4,23 +4,13 @@ import 'package:provider/provider.dart';
 import '../core/app_assets.dart';
 import '../core/app_colors.dart';
 import '../data/app_store.dart';
+import '../data/starter_packs.dart';
 import '../services/audio_service.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/menu_page.dart';
 
 class PresetsScreen extends StatelessWidget {
   const PresetsScreen({super.key});
-
-  static const library = <(String, String, List<String>)>[
-    ('Eat', 'Food when you cannot choose', ['Pizza', 'Sushi', 'Burger', 'Salad', 'Ramen', 'Tacos']),
-    ('Watch', 'What to put on the screen', ['Movie', 'Series', 'YouTube', 'Anime', 'Doc']),
-    ('Start', 'First move of the day', ['Inbox', 'Workout', 'Deep work', 'Break', 'Walk']),
-    ('Coin', 'Simple two-way flip', ['Heads', 'Tails']),
-    ('Yes / No', 'A clean binary', ['Yes', 'No']),
-    ('Team', 'Assign people or sides', ['A', 'B', 'C', 'D']),
-    ('Mood', 'How the evening goes', ['Out', 'Home', 'Gym', 'Call a friend']),
-    ('Weekend', 'Saturday plan', ['Trip', 'Clean', 'Sleep', 'Party', 'Hobby']),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +19,17 @@ class PresetsScreen extends StatelessWidget {
       title: 'Presets',
       subtitle: 'Tap a pack to load it into Drop.',
       child: ListView.separated(
-        itemCount: library.length,
+        itemCount: StarterPacks.library.length,
         separatorBuilder: (_, _) => const SizedBox(height: 10),
         itemBuilder: (context, i) {
-          final pack = library[i];
+          final pack = StarterPacks.library[i];
           return GlassPanel(
             onTap: () {
               AudioService.instance.play(AppAssets.soundBallAdd);
               store.applyPreset(pack.$1, pack.$3);
+              store.openTab(HomeTabs.drop);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Loaded “${pack.$1}”')),
+                SnackBar(content: Text('Loaded “${pack.$1}” into Drop')),
               );
             },
             child: Row(

@@ -147,6 +147,12 @@ class DropSession {
     String? excludeId,
   }) {
     var copy = options.map((o) => o.copy()).toList();
+    if (copy.isEmpty) {
+      copy = [
+        ChoiceOption(id: newId(), label: 'Add an option', colorIndex: 0),
+        ChoiceOption(id: newId(), label: 'Add another', colorIndex: 1),
+      ];
+    }
     if (excludeId != null && copy.length > 2) {
       final filtered = copy.where((o) => o.id != excludeId).toList();
       if (filtered.length >= 2) copy = filtered;
@@ -235,6 +241,7 @@ class AppSettings {
     this.streakDate,
     this.bestStreak = 0,
     this.favoriteSetIds = const [],
+    this.starterSeeded = false,
   });
 
   bool sound;
@@ -247,6 +254,7 @@ class AppSettings {
   String? streakDate;
   int bestStreak;
   List<String> favoriteSetIds;
+  bool starterSeeded;
 
   Map<String, dynamic> toJson() => {
         'sound': sound,
@@ -259,6 +267,7 @@ class AppSettings {
         'streakDate': streakDate,
         'bestStreak': bestStreak,
         'favoriteSetIds': favoriteSetIds,
+        'starterSeeded': starterSeeded,
       };
 
   factory AppSettings.fromJson(Map<String, dynamic> json) {
@@ -274,6 +283,7 @@ class AppSettings {
       bestStreak: json['bestStreak'] as int? ?? 0,
       favoriteSetIds: (json['favoriteSetIds'] as List<dynamic>? ?? [])
           .cast<String>(),
+      starterSeeded: json['starterSeeded'] as bool? ?? false,
     );
   }
 }

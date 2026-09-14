@@ -32,13 +32,20 @@ class LabScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'Three Quick drops in a row. Watch who keeps winning.',
+                  'Three Quick drops in a row. See who keeps winning.',
                   style: TextStyle(color: VxColors.textMuted),
                 ),
                 const SizedBox(height: 12),
                 NeonButton(
-                  label: 'Run a round',
+                  label: 'Run Best of 3',
+                  icon: Icons.looks_3_rounded,
+                  onPressed: () => _bestOf3(context, store),
+                ),
+                const SizedBox(height: 8),
+                NeonButton(
+                  label: 'Watch one drop',
                   icon: Icons.replay_rounded,
+                  secondary: true,
                   onPressed: () => _drop(context, store, DropMode.quick),
                 ),
               ],
@@ -103,7 +110,46 @@ class LabScreen extends StatelessWidget {
     );
   }
 
+  void _bestOf3(BuildContext context, AppStore store) {
+    store.ensureReadyToDrop();
+    store.setMode(DropMode.quick);
+    final error = store.validateDrop();
+    if (error != null) {
+      AudioService.instance.play(AppAssets.soundError);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+      return;
+    }
+    final rounds = <String>[];
+    for (var i = 0; i < 3; i++) {
+      rounds.add(store.createSession().winners.first.label);
+    }
+    final tallies = <String, int>{};
+    for (final label in rounds) {
+      tallies[label] = (tallies[label] ?? 0) + 1;
+    }
+    final champ = tallies.entries.reduce((a, b) => a.value >= b.value ? a : b);
+    AudioService.instance.play(AppAssets.soundSave);
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: VxColors.graphite,
+        title: const Text('Best of 3', style: TextStyle(color: Colors.white)),
+        content: Text(
+          '1. ${rounds[0]}\n2. ${rounds[1]}\n3. ${rounds[2]}\n\nChampion: ${champ.key} (${champ.value}/3)',
+          style: const TextStyle(color: Colors.white, height: 1.45),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _drop(BuildContext context, AppStore store, DropMode mode) {
+    store.ensureReadyToDrop();
     store.setMode(mode);
     final error = store.validateDrop();
     if (error != null) {

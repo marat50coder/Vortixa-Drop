@@ -79,6 +79,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Column(
               children: [
                 Image.asset(AppAssets.gameName, height: 92, fit: BoxFit.contain),
+                const Text(
+                  'How it works',
+                  style: TextStyle(
+                    color: VxColors.cyan,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
+                  ),
+                ),
                 const SizedBox(height: 8),
                 Expanded(
                   child: PageView.builder(

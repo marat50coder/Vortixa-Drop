@@ -5,7 +5,9 @@ import '../core/app_assets.dart';
 import '../core/app_colors.dart';
 import '../data/app_store.dart';
 import '../data/models.dart';
+import '../data/starter_packs.dart';
 import '../widgets/glass_panel.dart';
+import '../widgets/neon_button.dart';
 import '../widgets/scene_background.dart';
 
 class HistoryScreen extends StatelessWidget {
@@ -55,6 +57,12 @@ class HistoryScreen extends StatelessWidget {
                               'Every Drop is stored locally on this device.',
                               textAlign: TextAlign.center,
                               style: TextStyle(color: VxColors.textMuted),
+                            ),
+                            const SizedBox(height: 16),
+                            NeonButton(
+                              label: 'Go to Drop',
+                              icon: Icons.south_rounded,
+                              onPressed: () => store.openTab(HomeTabs.drop),
                             ),
                           ],
                         ),

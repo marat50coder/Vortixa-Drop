@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../core/app_assets.dart';
 import '../core/app_colors.dart';
 import '../core/orientation.dart';
+import '../data/app_store.dart';
 import '../services/audio_service.dart';
 import 'about_screen.dart';
 import 'daily_screen.dart';
@@ -27,7 +29,6 @@ class HomeShell extends StatefulWidget {
 }
 
 class _HomeShellState extends State<HomeShell> {
-  late int _index = widget.initialTab;
 
   static const _pages = [
     HomeScreen(),
@@ -63,13 +64,19 @@ class _HomeShellState extends State<HomeShell> {
   void initState() {
     super.initState();
     VxOrientation.lockPortrait();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<AppStore>().openTab(widget.initialTab);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final store = context.watch<AppStore>();
+    final index = store.shellTab.clamp(0, _pages.length - 1);
     return Scaffold(
       backgroundColor: VxColors.voidBlack,
-      body: IndexedStack(index: _index, children: _pages),
+      body: IndexedStack(index: index, children: _pages),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: const Color(0xF00A0A18),
@@ -93,7 +100,7 @@ class _HomeShellState extends State<HomeShell> {
                   return _NavItem(
                     icon: tab.$1,
                     label: tab.$2,
-                    selected: _index == i,
+                    selected: index == i,
                     onTap: () => _select(i),
                   );
                 },
@@ -106,9 +113,10 @@ class _HomeShellState extends State<HomeShell> {
   }
 
   void _select(int index) {
-    if (index == _index) return;
+    final store = context.read<AppStore>();
+    if (index == store.shellTab) return;
     AudioService.instance.play(AppAssets.soundMenuOpen);
-    setState(() => _index = index);
+    store.openTab(index);
   }
 }
 

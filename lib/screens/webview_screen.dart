@@ -70,11 +70,43 @@ class _SimpleWebViewScreenState extends State<SimpleWebViewScreen> {
           },
           onWebResourceError: (error) {
             if (!mounted || error.isForMainFrame == false) return;
-            setState(() => _hasError = true);
+            _loadFallback();
           },
         ),
       )
       ..loadRequest(Uri.parse(widget.url));
+  }
+
+  void _loadFallback() {
+    setState(() => _hasError = false);
+    _controller.loadHtmlString(_fallbackHtml(widget.title));
+  }
+
+  static String _fallbackHtml(String title) {
+    final isPrivacy = title.toLowerCase().contains('privacy');
+    final body = isPrivacy
+        ? '''
+<h1>Privacy Policy</h1>
+<p>Vortixa Drop is an offline decision tool. Options, saved sets, history, and settings stay on this device.</p>
+<p>The app does not require an account, and core features do not send your choices to a server.</p>
+<p>Optional Privacy Policy and Support pages may load from vortixadrop.com when a network is available.</p>
+<p>Contact: support@vortixadrop.com</p>
+'''
+        : '''
+<h1>Support</h1>
+<p>Add options, choose Quick / Multi / Split, then hold Drop. No login is required.</p>
+<p>Email: support@vortixadrop.com</p>
+''';
+    return '''
+<!doctype html>
+<html><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body{font-family:-apple-system,sans-serif;background:#fff;color:#111;padding:20px 16px 40px;line-height:1.45}
+  h1{font-size:22px}
+</style></head>
+<body>$body</body></html>
+''';
   }
 
   @override
@@ -99,7 +131,7 @@ class _SimpleWebViewScreenState extends State<SimpleWebViewScreen> {
                     icon: Icons.refresh_rounded,
                     onPressed: () {
                       setState(() => _hasError = false);
-                      _controller.reload();
+                      _controller.loadRequest(Uri.parse(widget.url));
                     },
                   ),
                 ],

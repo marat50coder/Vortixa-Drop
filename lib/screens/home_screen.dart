@@ -248,6 +248,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   void _startDrop(BuildContext context, AppStore store, double charge) {
+    store.ensureReadyToDrop();
     final error = store.validateDrop();
     if (error != null) {
       AudioService.instance.play(AppAssets.soundError);

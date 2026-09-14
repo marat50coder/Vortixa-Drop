@@ -89,6 +89,7 @@ class DailyScreen extends StatelessWidget {
             label: 'Drop today’s pick',
             icon: Icons.south_rounded,
             onPressed: () {
+              store.ensureDailyOptions(prompt);
               store.setMode(DropMode.quick);
               final error = store.validateDrop();
               if (error != null) {

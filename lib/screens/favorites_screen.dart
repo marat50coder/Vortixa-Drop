@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import '../core/app_assets.dart';
 import '../core/app_colors.dart';
 import '../data/app_store.dart';
+import '../data/starter_packs.dart';
 import '../services/audio_service.dart';
+import '../widgets/neon_button.dart';
 import '../widgets/glass_panel.dart';
 import '../widgets/menu_page.dart';
 import '../widgets/neon_ball.dart';
@@ -22,10 +24,33 @@ class FavoritesScreen extends StatelessWidget {
       title: 'Favorites',
       subtitle: 'Star a set on the Sets screen to pin it here.',
       child: favs.isEmpty
-          ? const Center(
-              child: Text(
-                'No favorites yet.',
-                style: TextStyle(color: VxColors.textMuted),
+          ? Center(
+              child: GlassPanel(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'No favorites yet',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    const Text(
+                      'Open Sets and tap the star on a pack to pin it here.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: VxColors.textMuted),
+                    ),
+                    const SizedBox(height: 16),
+                    NeonButton(
+                      label: 'Open Sets',
+                      icon: Icons.folder_special_rounded,
+                      onPressed: () => store.openTab(HomeTabs.sets),
+                    ),
+                  ],
+                ),
               ),
             )
           : ListView.separated(
@@ -37,8 +62,9 @@ class FavoritesScreen extends StatelessWidget {
                   onTap: () {
                     AudioService.instance.play(AppAssets.soundMenuOpen);
                     store.loadSavedSet(set);
+                    store.openTab(HomeTabs.drop);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Loaded “${set.name}”')),
+                      SnackBar(content: Text('Loaded “${set.name}” into Drop')),
                     );
                   },
                   child: Column(
