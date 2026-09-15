@@ -1,2 +1,7 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
+
+// Force AOT release even if the last `flutter run` left debug flags in Generated.xcconfig.
+FLUTTER_BUILD_MODE=release
+TRACK_WIDGET_CREATION=false
+TREE_SHAKE_ICONS=true
