@@ -163,7 +163,7 @@ class SettingsScreen extends StatelessWidget {
                       showAboutDialog(
                         context: context,
                         applicationName: 'Vortixa Drop',
-                        applicationVersion: '1.0.0',
+                        applicationVersion: '1.0.1',
                         applicationIcon: Image.asset(
                           AppAssets.icon,
                           width: 48,

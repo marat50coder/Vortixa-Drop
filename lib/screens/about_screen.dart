@@ -12,7 +12,7 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return MenuPage(
       title: 'About',
-      subtitle: 'Vortixa Drop 1.0.0',
+      subtitle: 'Vortixa Drop 1.0.1',
       child: ListView(
         children: [
           Image.asset(AppAssets.gameName, height: 88, fit: BoxFit.contain),
